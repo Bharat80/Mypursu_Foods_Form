@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mypursu Foods Booking Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9ff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      font-weight: 500;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .success-message {
+      text-align: center;
+      color: green;
+      margin-top: 20px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .product-card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+    }
+    .product-card img {
+      max-width: 100%;
+      border-radius: 4px;
+      height: 100px;
+      object-fit: cover;
+    }
+    .product-card input[type="number"] {
+      width: 80px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Mypursu Foods Booking Form</h2>
+    <form id="courierForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="mobile">Mobile Number</label>
+      <input type="tel" id="mobile" name="mobile" required pattern="[0-9]{10}" />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label>Products (Enter quantity)</label>
+      <div class="product-grid" id="productGrid"></div>
+
+      <label for="totalAmount">Total Amount (USD)</label>
+      <input type="text" id="totalAmount" name="totalAmount" readonly />
+
+      <label for="payment">Payment Type</label>
+      <select id="payment" name="payment" required>
+        <option value="">Select Payment Type</option>
+        <option value="MyPursu">MyPursu (Rs.200 off)</option>
+        <option value="Zelle">Zelle (+15106846989)</option>
+      </select>
+
+      <label for="paymentId">Payment ID (optional)</label>
+      <input type="text" id="paymentId" name="paymentId" />
+
+      <label for="address">Delivery Address</label>
+      <textarea id="address" name="address" rows="3" required></textarea>
+
+      <button type="submit">Submit Booking</button>
+      <div class="success-message" id="successMessage" style="display:none;">Thank you! Your booking has been submitted.</div>
+    </form>
+  </div>
+
+  <script>
+    const products = [
+      {
+        name: "Mango Pickle",
+        price: 5,
+        image: "https://media.istockphoto.com/id/1338328945/photo/full-frame-image-of-green-mango-chutney-recipe-in-stainless-steel-mixing-bowl-chopped-raw.jpg?s=2048x2048&w=is&k=20&c=1_I2ZkQrnP2r1Wg_nb-gR7gxW7usgenvntR9rAhckVQ="
+      },
+      {
+        name: "Gongura Pickle",
+        price: 6,
+        image: "https://media.istockphoto.com/id/1084540160/photo/red-chilli-pickle.jpg?s=2048x2048&w=is&k=20&c=EMlGYToJX6SxuZ8Fppoz0eHigUykByXxTO1YOKHbYgA="
+      },
+      {
+        name: "Garlic Pickle",
+        price: 5,
+        image: "https://media.istockphoto.com/id/1648911657/photo/pickled-garlic-fermented-garlic-cloves-with-red-chili-pepper-hot-pickle-vegetable-spices.jpg?s=2048x2048&w=is&k=20&c=0_laJdZ0PygbEk2Hui954Lipf6iO6QC3ie6ecWk1fs8="
+      },
+      {
+        name: "Tomato Pickle",
+        price: 5,
+        image: "https://media.istockphoto.com/id/488539952/photo/tomato-pickle-chutney.jpg?s=2048x2048&w=is&k=20&c=cVi9AUZff8uX2Hrm6wNia1yxSr3ItnFyi3WUbJx07MQ="
+      },
+      {
+        name: "Murukulu",
+        price: 4,
+        image: "https://media.istockphoto.com/id/2001186757/photo/kerupuk-or-krupuk-ikan-indonesian-traditional-fish-crackers.jpg?s=2048x2048&w=is&k=20&c=5l7x6NnaR5NbGJdwNtH4qFgZRloZxxA4TVA9hT9bQcY="
+      },
+      {
+        name: "Janthikalu",
+        price: 4,
+        image: "https://media.istockphoto.com/id/2184913206/photo/creative-shots-of-achappam-kerala-dish.jpg?s=2048x2048&w=is&k=20&c=PfCs1mdSwNfInrreMkfY7CEHN5FIL-cZuTCZ8bscPGM="
+      },
+      {
+        name: "Garelu",
+        price: 4,
+        image: "https://media.istockphoto.com/id/1341791862/photo/closeup-view-of-delicious-indian-festival-snacks-gaarelu.jpg?s=2048x2048&w=is&k=20&c=5zhu7SGH8-HLU2Ebi-brizJ5lFjEjW3RwFoFVKd6CQ4="
+      },
+      {
+        name: "Kajjikayalu",
+        price: 4,
+        image: "https://media.istockphoto.com/id/1460593779/photo/indian-mithai-gujia-also-called-gujiya-pirukiya-pirukia-pedakiya-karanji-basundi-gughra-made.jpg?s=2048x2048&w=is&k=20&c=P6kg5KnMM7Ykm-UvXqWcbxv9FGGYlWAZeHMcNoS3vXg="
+      }
+    ];
+
+    const productGrid = document.getElementById("productGrid");
+    products.forEach((product, index) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" />
+        <p>${product.name} - $${product.price}</p>
+        <input type="number" name="qty_${index}" data-price="${product.price}" min="0" placeholder="Qty" />
+      `;
+      productGrid.appendChild(card);
+    });
+
+    productGrid.addEventListener("input", () => {
+      const inputs = productGrid.querySelectorAll("input[type='number']");
+      let total = 0;
+      inputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        const price = parseFloat(input.dataset.price);
+        total += qty * price;
+      });
+      document.getElementById("totalAmount").value = total.toFixed(2);
+    });
+
+    document.getElementById('courierForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      fetch('https://formspree.io/f/your-form-id', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          document.getElementById('successMessage').style.display = 'block';
+          document.getElementById('courierForm').reset();
+          document.getElementById("totalAmount").value = '';
+        } else {
+          alert('Something went wrong. Please try again.');
+        }
+      })
+      .catch(error => {
+        alert('Error occurred: ' + error.message);
+      });
+    });
+  </script>
+</body>
+</html>
